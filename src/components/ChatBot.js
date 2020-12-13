@@ -3,6 +3,7 @@ import {CircularProgress} from '@material-ui/core';
 import Chat from './Chat';
 import {sendAnswer} from '../helpers/Communicate';
 import moment from 'moment';
+import {scroller} from 'react-scroll';
 
 export default class ChatBot extends React.Component{
     constructor(props){
@@ -12,7 +13,14 @@ export default class ChatBot extends React.Component{
             messages: [],
             currentQuestion: 0
         }
+        this.lastRef = React.createRef()
     }
+    scrollToSection = () => {
+        this.lastRef.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          });
+      };
 
     componentDidMount(){
         sendAnswer(this.state.currentQuestion,'hello').then(d => {
@@ -37,7 +45,7 @@ export default class ChatBot extends React.Component{
         messages.forEach((item, index) => {
             item.data.disabled = true;
         })
-        this.setState({messages: messages})
+        this.setState({messages: messages},()=>this.scrollToSection())
 
         sendAnswer(this.state.currentQuestion,value).then(d => {
             const stateMessages = this.state.messages;
@@ -46,7 +54,7 @@ export default class ChatBot extends React.Component{
                 from: 0
             }
             stateMessages.push(messageData);
-            this.setState({messages: stateMessages});
+            this.setState({messages: stateMessages},()=>this.scrollToSection());
         })
     }
 
@@ -55,7 +63,7 @@ export default class ChatBot extends React.Component{
             return (<CircularProgress />)
         }
         return (
-            <Chat messages={this.state.messages} handleChoice={this.onChoice} question={this.state.currentQuestion}/>
+            <Chat lastRef={this.lastRef} messages={this.state.messages} handleChoice={this.onChoice} question={this.state.currentQuestion}/>
         )
     }
 }

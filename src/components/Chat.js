@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => {
     }
 });
 
-const Chat = ({messages, question, handleChoice}) => {
+const Chat = ({messages, question, handleChoice, lastRef}) => {
   const classes = useStyles();
 
   return (
@@ -54,7 +54,7 @@ const Chat = ({messages, question, handleChoice}) => {
             
             <Grid item xs={12}>
                 <List>
-                    {messages.map((item, index) => <RenderMessage onChoice={handleChoice} key={index} data={item.data} from={item.from} classes={classes} />)}
+                    {messages.map((item, index) => <RenderMessage lastRef={lastRef} isLast={index === messages.length - 1 ? true : false} onChoice={handleChoice} key={index} data={item.data} from={item.from} classes={classes} />)}
                 </List>
             </Grid>
         </Grid>
@@ -62,10 +62,10 @@ const Chat = ({messages, question, handleChoice}) => {
   );
 }
 
-function RenderMessage({from,data,key,classes,onChoice}){
+function RenderMessage({from,data,key,classes,onChoice,isLast, lastRef}){
     if(from === 0){
         return (
-            <ListItem key={key} id={key}>
+            <ListItem key={key} id={key} ref={isLast ? lastRef : null}>
                 <ListItemAvatar>
                     <Avatar>H</Avatar>
                 </ListItemAvatar>
@@ -87,7 +87,7 @@ function RenderMessage({from,data,key,classes,onChoice}){
     }
 
     return (
-        <ListItem key={key} style={{flexDirection: 'row-reverse'}}>
+        <ListItem key={key} style={{flexDirection: 'row-reverse'}} ref={isLast ? lastRef : null}>
             <ListItemAvatar style={{ display: 'flex',justifyContent: 'flex-end'}}>
                 <Avatar className={classes.myAvatar}>ME</Avatar>
             </ListItemAvatar>
