@@ -3,21 +3,20 @@ import './App.css';
 import {AppBar, Toolbar, Typography, Button, Grid, TextField } from '@material-ui/core';
 import ChatBot from './components/ChatBot';
 
-const botName = "Kojo";
 function App() {
   const [started, setStarted] = useState(false);
   const [userName, setUserName] = useState('');
   const start = () => {
-    console.log(userName)
     setStarted(true);
   }
   const onChangeUsername = e => {
     setUserName(e.target.value);
   }
 
+  const botName = "Kojo";
+
   const reset = () => {
-    setStarted(false);
-    setUserName('');
+    document.location.reload()
   }
   return (
     <div style={{display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'auto'}}>
@@ -33,7 +32,7 @@ function App() {
         <Grid md={6} xs={12} item align="center" >
           {
             started && userName !== '' && (
-              <ChatBot username={userName} botName={botName} />
+              <ChatBot userName={userName} botName={botName} />
             )
           }
           {

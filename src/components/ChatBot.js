@@ -3,7 +3,6 @@ import {CircularProgress} from '@material-ui/core';
 import Chat from './Chat';
 import {sendAnswer} from '../helpers/Communicate';
 import moment from 'moment';
-import {scroller} from 'react-scroll';
 
 export default class ChatBot extends React.Component{
     constructor(props){
@@ -14,6 +13,7 @@ export default class ChatBot extends React.Component{
             currentQuestion: 0
         }
         this.lastRef = React.createRef()
+        this.config = {botname: this.props.botName, username: this.props.userName}
     }
     scrollToSection = () => {
         this.lastRef.current.scrollIntoView({
@@ -22,16 +22,35 @@ export default class ChatBot extends React.Component{
           });
       };
 
+
     componentDidMount(){
-        sendAnswer(this.state.currentQuestion,'hello').then(d => {
+        sendAnswer(this.state.currentQuestion,'init',this.config).then(d => {
             const stateMessages = this.state.messages;
             const messageData = {
                 data: d,
                 from: 0
             }
             stateMessages.push(messageData);
-            this.setState({loaded: true, messages: stateMessages})
+            this.setState({loaded: true, messages: stateMessages},()=>{
+                sendAnswer(this.state.currentQuestion,'hello').then(n => {
+                    const stateMessages = this.state.messages;
+                    const messageData = {
+                        data: n,
+                        from: 0
+                    }
+                    stateMessages.push(messageData);
+                    this.setState({messages: stateMessages,currentQuestion: n.question})
+                })
+            })
         })
+    }
+
+    componentWillUnmount(){
+        this.setState({
+            loaded: false,
+            messages: [],
+            currentQuestion: 0
+        });
     }
 
     onChoice = (value) =>{
@@ -54,7 +73,7 @@ export default class ChatBot extends React.Component{
                 from: 0
             }
             stateMessages.push(messageData);
-            this.setState({messages: stateMessages},()=>this.scrollToSection());
+            this.setState({messages: stateMessages,currentQuestion: d.question},()=>this.scrollToSection());
         })
     }
 

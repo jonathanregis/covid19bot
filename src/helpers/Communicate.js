@@ -1,9 +1,8 @@
-export async function sendAnswer(q,a){
-    return Promise.resolve({
-        'question': 2,
-        'message': 'Are you feeling sick?',
-        'responseType': 'affirm',
-        'options': [{label: 'Yes', value: 'yes'},{label: 'No', value: 'no'}],
-        'time': '00:00'
-    });
+import {getResponse} from './backendFunctions';
+
+export async function sendAnswer(q,a,botConfig={}){
+    if(typeof botConfig.botname !== 'undefined' && typeof botConfig.username !== 'undefined'){
+        return getResponse(q,a,botConfig.botname,botConfig.username)
+    }
+    return getResponse(q,a);
 }

@@ -67,17 +67,17 @@ function RenderMessage({from,data,key,classes,onChoice,isLast, lastRef}){
         return (
             <ListItem key={key} id={key} ref={isLast ? lastRef : null}>
                 <ListItemAvatar>
-                    <Avatar>H</Avatar>
+                    <Avatar>Bot</Avatar>
                 </ListItemAvatar>
                 <Grid container>
                     <Grid item xs={12}>
-                        <ListItemText className={classes.messageForMe} align="left" primary={data.message}></ListItemText>
+        <ListItemText className={classes.messageForMe} align="left" ><p dangerouslySetInnerHTML={{__html: data.message}}></p></ListItemText>
                     </Grid>
-                    <Grid item xs={12} align="left">
-                        {data.question && (
+                    {typeof data.responseType !== 'undefined' && (
+                        <Grid item xs={12} align="left">
                             <RenderInput callback={(v) => onChoice(v) } type={data.responseType} disabled={typeof data.disabled === "undefined" ? false : data.disabled} options={data.options} />
-                        )}
-                    </Grid>
+                        </Grid>
+                    )}
                     <Grid item xs={12}>
                         <ListItemText align="left" secondary={data.time}></ListItemText>
                     </Grid>
@@ -109,11 +109,11 @@ function RenderInput({type,options,callback,disabled}){
     switch(type){
         case 'select':
             res = <FormControl fullWidth variant="outlined">
-                <InputLabel id="demo-simple-select-outlined-label">Age</InputLabel>
+                <InputLabel id="">Choose</InputLabel>
                 <Select
                 value={value}
                 fullWidth
-                onChange={(e) => {setValue(e.target.value); callback(value)}}
+                onChange={(e) => {setValue(e.target.value); callback(e.target.value)}}
                 label="Answer"
                 disabled={disabled}
                 >
